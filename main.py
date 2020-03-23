@@ -79,7 +79,6 @@ def get_output(frame, result,prob_threshold,w,h):
     :return: person count and frame
     """
     current_count = 0
-    # print(result)
     for obj in result[0][0]:
         # Draw bounding box for object when it's probability is more than
         #  the specified threshold
@@ -114,7 +113,7 @@ def infer_on_stream(args, client):
     last_count = 0
     total_count = 0
     start_time = 0
-    visualise=args.visualise
+
 
     # Set Probability threshold for detections
     prob_threshold = args.prob_threshold
@@ -138,12 +137,8 @@ def infer_on_stream(args, client):
         input_stream = args.input
         assert os.path.isfile(args.input), "Specified input file doesn't exist"
 
-    cap = cv2.VideoCapture(args.input)
-    if input_stream:
-        cap.open(args.input)
+    cap = cv2.VideoCapture(input_stream)
 
-    if not cap.isOpened():
-        log.error("ERROR! Unable to open video source")
 
 
     width = int(cap.get(3))
@@ -198,8 +193,8 @@ def infer_on_stream(args, client):
             client.publish("person", json.dumps({"count": current_count}))
             last_count = current_count            
          ### TODO: Send frame to the ffmpeg server
-        # sys.stdout.buffer.write(out_frame)
-        # sys.stdout.flush()
+        sys.stdout.buffer.write(frame)
+        sys.stdout.flush()
         if key_pressed == 27:
             break 
 
